@@ -5,10 +5,16 @@ export const metadata: Metadata = {
   title: "Log in",
 };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ redirect?: string }>;
+}) {
+  const params = await searchParams;
+
   return (
     <div className="flex items-center justify-center px-4 py-16">
-      <AuthForm mode="login" />
+      <AuthForm mode="login" redirectTo={params?.redirect} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { fetchCities, fetchSpaces } from "@/lib/api";
 import type { Space, SpaceType } from "@/types";
 import { SpaceCard } from "@/components/SpaceCard";
@@ -232,7 +233,9 @@ export default function SearchPage() {
             </p>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {spaces.map((space) => (
-                <SpaceCard key={space.id} space={space} />
+                <Link key={space.id} href={`/spaces/${space.id}`}>
+                  <SpaceCard space={space} />
+                </Link>
               ))}
             </div>
           </>

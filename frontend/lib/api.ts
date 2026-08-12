@@ -1,5 +1,12 @@
 import axios from "axios";
-import type { AuthErrorResponse, Space, SpaceQuery } from "@/types";
+import type {
+  AuthErrorResponse,
+  AvailabilitySlot,
+  CreateReservationPayload,
+  Reservation,
+  Space,
+  SpaceQuery,
+} from "@/types";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api";
@@ -35,5 +42,38 @@ export async function fetchSpaces(query?: SpaceQuery): Promise<Space[]> {
 
 export async function fetchCities(): Promise<string[]> {
   const { data } = await api.get<string[]>("/spaces/cities");
+  return data;
+}
+
+export async function fetchSpace(id: string): Promise<Space> {
+  const { data } = await api.get<Space>(`/spaces/${id}`);
+  return data;
+}
+
+export async function fetchAvailability(
+  id: string,
+  date: string,
+): Promise<AvailabilitySlot[]> {
+  const { data } = await api.get<AvailabilitySlot[]>(
+    `/spaces/${id}/availability`,
+    { params: { date } },
+  );
+  return data;
+}
+
+export async function fetchReservations(): Promise<Reservation[]> {
+  const { data } = await api.get<Reservation[]>("/reservations");
+  return data;
+}
+
+export async function createReservation(
+  payload: CreateReservationPayload,
+): Promise<Reservation> {
+  const { data } = await api.post<Reservation>("/reservations", payload);
+  return data;
+}
+
+export async function cancelReservation(id: string): Promise<Reservation> {
+  const { data } = await api.patch<Reservation>(`/reservations/${id}/cancel`);
   return data;
 }

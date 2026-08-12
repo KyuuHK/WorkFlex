@@ -1,5 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, SpaceType } from '../../generated/prisma/client';
+import {
+  Prisma,
+  ReservationStatus,
+  SpaceType,
+} from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { QuerySpacesDto } from './dto/query-spaces.dto';
 
@@ -65,6 +69,51 @@ export class SpacesService {
       orderBy: { city: 'asc' },
     });
     return cities.map((city) => city.city);
+  }
+
+  async getAvailability(id: string, date: string) {
+    const space = await this.prisma.space.findUnique({ where: { id } });
+    if (!space) {
+      throw new NotFoundException(`Space with id ${id} not found`);
+    }
+
+    const windowStart = new Date(`${date}T09:00:00`);
+    const windowEnd = new Date(`${date}T18:00:00`);
+
+    const reservations = await this.prisma.reservation.findMany({
+      where: {
+        spaceId: id,
+        status: {
+          in: [ReservationStatus.PENDING, ReservationStatus.CONFIRMED],
+        },
+        startAt: { lt: windowEnd },
+        endAt: { gt: windowStart },
+      },
+    });
+
+    const slots: Array<{
+      startAt: string;
+      endAt: string;
+      available: boolean;
+    }> = [];
+
+    for (let hour = 9; hour < 18; hour++) {
+      const slotStart = new Date(
+        `${date}T${String(hour).padStart(2, '0')}:00:00`,
+      );
+      const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
+      const available = !reservations.some(
+        (reservation) =>
+          reservation.startAt < slotEnd && reservation.endAt > slotStart,
+      );
+      slots.push({
+        startAt: slotStart.toISOString(),
+        endAt: slotEnd.toISOString(),
+        available,
+      });
+    }
+
+    return slots;
   }
 
   private serialize(space: {

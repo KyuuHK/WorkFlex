@@ -8,9 +8,10 @@ import { getErrorMessage } from "@/lib/api";
 
 interface AuthFormProps {
   mode: "login" | "register";
+  redirectTo?: string;
 }
 
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode, redirectTo }: AuthFormProps) {
   const { login, register } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,9 +27,9 @@ export function AuthForm({ mode }: AuthFormProps) {
     setSubmitting(true);
     try {
       if (isLogin) {
-        await login(email, password);
+        await login(email, password, redirectTo);
       } else {
-        await register(name, email, password);
+        await register(name, email, password, redirectTo);
       }
     } catch (err) {
       setError(getErrorMessage(err));

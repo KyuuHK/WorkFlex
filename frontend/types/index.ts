@@ -37,3 +37,27 @@ export interface SpaceQuery {
   minPrice?: number;
   maxPrice?: number;
 }
+
+export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+
+export interface Reservation {
+  id: string;
+  spaceId: string;
+  startAt: string;
+  endAt: string;
+  status: ReservationStatus;
+  createdAt: string;
+  space: Space;
+}
+
+export interface CreateReservationPayload {
+  spaceId: string;
+  startAt: string;
+  endAt: string;
+}
+
+export interface AvailabilitySlot {
+  startAt: string;
+  endAt: string;
+  available: boolean;
+}

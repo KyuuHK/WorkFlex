@@ -16,11 +16,24 @@ import type { AuthResponse, User } from "@/types";
 const TOKEN_KEY = "workflex_token";
 const USER_KEY = "workflex_user";
 
+function safeRedirect(redirectTo?: string): string {
+  return redirectTo &&
+    redirectTo.startsWith("/") &&
+    !redirectTo.startsWith("//")
+    ? redirectTo
+    : "/dashboard";
+}
+
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, redirectTo?: string) => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    redirectTo?: string,
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -51,26 +64,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, redirectTo?: string) => {
       const { data } = await api.post<AuthResponse>("/auth/login", {
         email,
         password,
       });
       persist(data);
-      router.push("/dashboard");
+      router.push(safeRedirect(redirectTo));
     },
     [persist, router],
   );
 
   const register = useCallback(
-    async (name: string, email: string, password: string) => {
+    async (name: string, email: string, password: string, redirectTo?: string) => {
       const { data } = await api.post<AuthResponse>("/auth/register", {
         name,
         email,
         password,
       });
       persist(data);
-      router.push("/dashboard");
+      router.push(safeRedirect(redirectTo));
     },
     [persist, router],
   );
