@@ -1,28 +1,176 @@
-# 🏢 WorkFlex - Sistema Integrado de Reserva de Espacios de Coworking
+# 🏢 WorkFlex
 
-## 📖 Descripción del Proyecto
-WorkFlex es una plataforma centralizada que automatiza la reserva de espacios de trabajo para nómadas digitales, freelancers y equipos remotos. El objetivo es ofrecer un Producto Mínimo Viable (MVP) web que permita ubicar y asegurar espacios en tiempo real, garantizando la disponibilidad y procesando las solicitudes de manera eficiente.
+> **Sistema Integrado de Reserva de Espacios de Coworking** — Encuentra, reserva y trabaja sin fricciones.
 
-## ✨ Características Principales
-*   **Autenticación Básica:** Registro e inicio de sesión de usuarios estándar mediante correo y contraseña convencional.
-*   **Motor de Búsqueda:** Implementación de filtros para segmentar espacios por ciudad, costo y categoría del lugar, ya sea oficina privada o escritorio.
-*   **Gestor de Reservas:** Sistema que permite la selección de fechas y horarios, reflejando la disponibilidad en vivo e impidiendo el sobrecupo (overbooking).
-*   **Notificaciones:** Generación y envío de confirmaciones automáticas por correo electrónico o en formato PDF con el detalle del espacio reservado.
+WorkFlex es una plataforma web que automatiza la reserva de espacios de trabajo para nómadas digitales, freelancers y equipos remotos. Este monorepo contiene el MVP completo: una API REST en NestJS y una aplicación web en Next.js.
 
-## 🛠️ Tecnologías y Herramientas (Stack Propuesto)
-*   **Frameworks Web:** Next.js y NestJS.
-*   **Base de Datos:** Scripts SQL para bases de datos relacionales como MySQL o PostgreSQL.
-*   **Diseño UX/UI:** Prototipado interactivo y mapas de sitio desarrollados en Figma.
-*   **Infraestructura y Despliegue:** Alojamiento en la nube utilizando los niveles gratuitos de plataformas como Vercel, Supabase o Render.
-*   **Aseguramiento de Calidad:** Programas de validación de código y testing como SonarQube.
+<p align="center">
+  <em>Desarrollado por <strong>Beyond Studios</strong> · Jose Abrego · Kevin Rodriguez · Giuseppe Toscano</em>
+</p>
 
-## 👥 Equipo de Desarrollo
-*   **Giuseppe Toscano:** Líder de Proyecto (PM) encargado de la gestión de tiempos, pruebas y aseguramiento de calidad.
-*   **Kevin Rodriguez:** Desarrollador Lógico Backend enfocado en APIs y lógica de negocio.
-*   **Jose Abrego:** Diseñador UX/UI & Lógica Web responsable del flujo de usuario y la interfaz.
+---
+
+## ✨ Características
+
+| Módulo | Estado |
+| --- | --- |
+| 🔐 Autenticación (registro, login, sesión con JWT) | ✅ Implementado |
+| 🔎 Motor de búsqueda y catálogo (filtros por ciudad, tipo y precio) | ✅ Implementado |
+| 📅 Motor de reservas con prevención de sobrecupo (overbooking) | ✅ Implementado |
+| 📬 Notificaciones por correo / PDF | ⏳ En desarrollo |
+| 🚀 Despliegue (Vercel + Render) | ⏳ En desarrollo |
+
+**Motor de búsqueda:** filtra espacios por ciudad, costo y categoría (oficina privada o escritorio).
+
+**Motor de reservas:** selecciona fecha y horario viendo la disponibilidad en vivo. Antes de insertar una reserva se valida en la base de datos que no exista otra reserva para el mismo espacio en el rango solicitado; si existe, se devuelve un error `409 Conflict`, impidiendo el sobrecupo.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Frontend:** Next.js (App Router) · React · Tailwind CSS · Axios
+- **Backend:** NestJS · Prisma ORM · JWT
+- **Base de datos:** PostgreSQL 16
+- **Calidad:** Jest (unitarias) · ESLint · TypeScript
+
+---
+
+## 📂 Estructura del Monorepo
+
+```text
+WorkFlex/
+├── backend/       # API REST (NestJS + Prisma + PostgreSQL)
+│   ├── prisma/    # Esquema de datos, migraciones y seed
+│   └── src/
+│       ├── auth/          # Registro, login, guard JWT
+│       ├── spaces/        # Catálogo y búsqueda de espacios
+│       ├── reservations/  # Reservas y prevención de overbooking
+│       └── prisma/        # Conexión a la base de datos
+├── frontend/      # Aplicación web (Next.js + Tailwind CSS)
+│   ├── app/       # Rutas (/, /login, /register, /search, /spaces/[id], /dashboard)
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   └── types/
+├── docker-compose.yml  # PostgreSQL local
+└── README.md
+```
+
+---
 
 ## 🚀 Instalación y Ejecución Local
-*(Aquí puedes agregar las instrucciones paso a paso para que un evaluador o profesor clone el repositorio, instale las dependencias con `npm install` y ejecute el servidor de desarrollo, por ejemplo, con `npm run dev`)*.
 
-## 📌 Estado del Proyecto
-Este proyecto es un desarrollo académico estipulado para completarse en un ciclo estricto de 12 semanas[cite: 2].
+### Requisitos previos
+- Node.js 20+
+- Docker (para la base de datos PostgreSQL)
+
+### 1. Levantar la base de datos
+```bash
+docker compose up -d
+```
+
+### 2. Backend (API en `http://localhost:3000/api`)
+```bash
+cd backend
+npm install
+cp .env.example .env          # configurar credenciales
+npx prisma migrate deploy     # aplicar esquema de base de datos
+npx prisma db seed            # (opcional) cargar espacios de ejemplo
+npm run start:dev
+```
+
+### 3. Frontend (web en `http://localhost:3001`)
+```bash
+cd frontend
+npm install
+cp .env.example .env.local    # apuntar NEXT_PUBLIC_API_URL al backend
+npm run dev -- -p 3001        # el puerto 3000 lo usa el backend
+```
+
+Abre **http://localhost:3001**, crea una cuenta y explora el flujo completo: búsqueda → detalle del espacio → reserva → dashboard.
+
+---
+
+## 📡 API REST
+
+| Método | Ruta | Descripción | Acceso |
+| --- | --- | --- | --- |
+| `GET` | `/api/health` | Estado del servicio | Público |
+| `POST` | `/api/auth/register` | Crear cuenta | Público |
+| `POST` | `/api/auth/login` | Iniciar sesión | Público |
+| `GET` | `/api/auth/me` | Perfil del usuario | 🔒 Token |
+| `GET` | `/api/spaces` | Catálogo con filtros | Público |
+| `GET` | `/api/spaces/cities` | Ciudades disponibles | Público |
+| `GET` | `/api/spaces/:id` | Detalle de un espacio | Público |
+| `GET` | `/api/spaces/:id/availability` | Disponibilidad por día | Público |
+| `POST` | `/api/reservations` | Crear reserva (`409` si hay conflicto) | 🔒 Token |
+| `GET` | `/api/reservations` | Reservas del usuario | 🔒 Token |
+| `PATCH` | `/api/reservations/:id/cancel` | Cancelar reserva | 🔒 Token |
+
+### Filtros de búsqueda (`GET /api/spaces`)
+| Parámetro | Descripción |
+| --- | --- |
+| `city` | Ciudad (coincidencia parcial, insensible a mayúsculas) |
+| `q` | Texto libre sobre nombre o descripción |
+| `type` | `DESK` o `PRIVATE_OFFICE` (acepta minúsculas) |
+| `minPrice` / `maxPrice` | Rango de precio por hora en dólares |
+
+### Disponibilidad (`GET /api/spaces/:id/availability?date=YYYY-MM-DD`)
+Devuelve los horarios de 09:00 a 18:00 marcando cada franja como `available: true/false`.
+
+### Ejemplo — crear reserva
+```bash
+curl -X POST http://localhost:3000/api/reservations \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "spaceId": "cmsphqt700004l0sb5zg1j6fd",
+    "startAt": "2026-08-12T14:00:00.000Z",
+    "endAt": "2026-08-12T16:00:00.000Z"
+  }'
+```
+
+---
+
+## 📋 Scripts útiles
+
+| Proyecto | Comando | Descripción |
+| --- | --- | --- |
+| Backend | `npm run start:dev` | Servidor de desarrollo con recarga |
+| Backend | `npm test` | Pruebas unitarias (Jest) |
+| Backend | `npm run lint` | ESLint |
+| Backend | `npx prisma db seed` | Cargar espacios de ejemplo |
+| Frontend | `npm run dev -- -p 3001` | Servidor de desarrollo |
+| Frontend | `npm run lint` | ESLint |
+| Frontend | `npm run build` | Build de producción |
+
+---
+
+## 🗺️ Roadmap (ciclo de 12 semanas)
+
+| Fase | Descripción | Estado |
+| --- | --- | --- |
+| 1 | Planificación y diseño (prototipo en Figma, ERD, repos) | ✅ Completada |
+| 2 | Configuración base y autenticación (registro, login, JWT) | ✅ Completada |
+| 3 | Motor de búsqueda y catálogo | ✅ Completada |
+| 4 | Motor de reservas y prevención de overbooking | ✅ Completada |
+| 5 | Notificaciones (correo y PDF) | ⏳ Pendiente |
+| 6 | Pruebas y despliegue (Vercel, Render) | ⏳ Pendiente |
+
+---
+
+## 🤝 Equipo de Desarrollo
+
+| Miembro | Rol |
+| --- | --- |
+| **Giuseppe Toscano** | Líder de Proyecto (PM) — gestión de tiempos, pruebas y QA |
+| **Kevin Rodriguez** | Desarrollador Backend — APIs y lógica de negocio |
+| **Jose Abrego** | Diseñador UX/UI & Lógica Web — flujo de usuario e interfaz |
+
+---
+
+## 📌 Notas
+
+- Los secretos (`JWT_SECRET`, credenciales) se mantienen fuera del repositorio mediante archivos `.env` (ver `.env.example`).
+- El flujo de trabajo usa ramas `main` y `develop` con Pull Requests hacia `develop`.
+- Proyecto de desarrollo académico, sin fines comerciales.

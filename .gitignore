@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+build/
+.next/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+*.sqlite
+prisma/*.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+# AI tooling caches
+backend/.agents/
+backend/.claude/
+backend/.windsurf/
+backend/skills-lock.json
+
+# Docker volumes data
+postgres-data/
