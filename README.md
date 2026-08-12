@@ -150,6 +150,8 @@ curl -X POST http://localhost:3000/api/reservations \
 
 ## 🚀 Despliegue (Fase 6)
 
+> **✅ En producción:** API → `https://workflex-api.onrender.com/api` · Web → `https://work-flex-phi.vercel.app` · Base de datos → Supabase (PostgreSQL).
+
 El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (API) y **Vercel** (web). Todo se despliega desde la rama `main` (ver flujo de git más abajo).
 
 ### 1. Base de datos — Supabase (gratis)
@@ -196,7 +198,7 @@ El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (
 | 3 | Motor de búsqueda y catálogo | ✅ Completada |
 | 4 | Motor de reservas y prevención de overbooking | ✅ Completada |
 | 5 | Notificaciones (correo y PDF) | ✅ Completada |
-| 6 | Pruebas y despliegue (Vercel, Render, Supabase) | ⏳ Pendiente |
+| 6 | Pruebas y despliegue (Vercel, Render, Supabase) | ✅ Completada |
 
 ---
 
