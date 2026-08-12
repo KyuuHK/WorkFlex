@@ -24,6 +24,14 @@ function todayISO(): string {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
+function formatHour(iso: string): string {
+  return new Date(iso).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 export default function SpaceDetailPage() {
   const params = useParams<{ id: string }>();
   const { user } = useAuth();
@@ -236,7 +244,6 @@ export default function SpaceDetailPage() {
                 </p>
                 <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
                   {slots.map((slot) => {
-                    const hour = new Date(slot.startAt).getHours();
                     const isSelected = slot.startAt === selectedStart;
                     const covered = requiredSlots.some(
                       (required) => required.startAt === slot.startAt,
@@ -261,7 +268,7 @@ export default function SpaceDetailPage() {
                                 : "border-gray-300 bg-white text-gray-700 hover:border-indigo-400 hover:bg-indigo-50"
                         }`}
                       >
-                        {hour}:00
+                        {formatHour(slot.startAt)}
                       </button>
                     );
                   })}
