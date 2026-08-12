@@ -41,38 +41,6 @@ const spaces = [
     capacity: 2,
     description: "Compact private office overlooking the bay.",
   },
-  {
-    name: "Estudio 88",
-    city: "Bogota",
-    type: SpaceType.DESK,
-    pricePerHour: "2.50",
-    capacity: 1,
-    description: "Creative studio desk in Chapinero with 24/7 access.",
-  },
-  {
-    name: "Estudio 88",
-    city: "Bogota",
-    type: SpaceType.PRIVATE_OFFICE,
-    pricePerHour: "10.50",
-    capacity: 6,
-    description: "Team office for up to six people with kitchen access.",
-  },
-  {
-    name: "Skyline Work Lofts",
-    city: "Buenos Aires",
-    type: SpaceType.DESK,
-    pricePerHour: "3.00",
-    capacity: 1,
-    description: "Ergonomic desks in Palermo with balcony views.",
-  },
-  {
-    name: "Skyline Work Lofts",
-    city: "Buenos Aires",
-    type: SpaceType.PRIVATE_OFFICE,
-    pricePerHour: "14.00",
-    capacity: 8,
-    description: "Executive office with conference room included.",
-  },
 ];
 
 async function main() {
