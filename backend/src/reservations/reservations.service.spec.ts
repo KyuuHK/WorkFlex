@@ -7,12 +7,14 @@ import {
 } from '@nestjs/common';
 import { ReservationStatus, SpaceType } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { ReservationsService } from './reservations.service';
 
 describe('ReservationsService', () => {
   let service: ReservationsService;
   let prisma: {
     space: { findUnique: jest.Mock };
+    user: { findUnique: jest.Mock };
     reservation: {
       findFirst: jest.Mock;
       findMany: jest.Mock;
@@ -21,6 +23,7 @@ describe('ReservationsService', () => {
       update: jest.Mock;
     };
   };
+  let mail: { sendReservationConfirmation: jest.Mock };
 
   const spaceRecord = {
     id: 'space-1',
@@ -46,6 +49,7 @@ describe('ReservationsService', () => {
   beforeEach(async () => {
     prisma = {
       space: { findUnique: jest.fn() },
+      user: { findUnique: jest.fn() },
       reservation: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -54,11 +58,13 @@ describe('ReservationsService', () => {
         update: jest.fn(),
       },
     };
+    mail = { sendReservationConfirmation: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ReservationsService,
         { provide: PrismaService, useValue: prisma },
+        { provide: MailService, useValue: mail },
       ],
     }).compile();
 
@@ -68,6 +74,10 @@ describe('ReservationsService', () => {
   describe('create', () => {
     it('creates a confirmed reservation when the space is free', async () => {
       prisma.space.findUnique.mockResolvedValue(spaceRecord);
+      prisma.user.findUnique.mockResolvedValue({
+        name: 'Jose Abrego',
+        email: 'jose@workflex.app',
+      });
       prisma.reservation.findFirst.mockResolvedValue(null);
       prisma.reservation.create.mockResolvedValue(reservationRecord);
 
@@ -98,6 +108,29 @@ describe('ReservationsService', () => {
         include: { space: true },
       });
       expect(result.space.pricePerHour).toBe(3.5);
+      expect(mail.sendReservationConfirmation).toHaveBeenCalledTimes(1);
+      expect(mail.sendReservationConfirmation).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userEmail: 'jose@workflex.app',
+          spaceName: 'The Vault Coworking',
+          total: 7,
+        }),
+      );
+    });
+
+    it('sends no email when the space is already booked', async () => {
+      prisma.space.findUnique.mockResolvedValue(spaceRecord);
+      prisma.reservation.findFirst.mockResolvedValue(reservationRecord);
+
+      await expect(
+        service.create('user-1', {
+          spaceId: 'space-1',
+          startAt: '2026-08-12T15:00:00.000Z',
+          endAt: '2026-08-12T17:00:00.000Z',
+        }),
+      ).rejects.toBeInstanceOf(ConflictException);
+
+      expect(mail.sendReservationConfirmation).not.toHaveBeenCalled();
     });
 
     it('throws NotFoundException for an unknown space', async () => {

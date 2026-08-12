@@ -17,12 +17,14 @@ WorkFlex es una plataforma web que automatiza la reserva de espacios de trabajo 
 | 🔐 Autenticación (registro, login, sesión con JWT) | ✅ Implementado |
 | 🔎 Motor de búsqueda y catálogo (filtros por ciudad, tipo y precio) | ✅ Implementado |
 | 📅 Motor de reservas con prevención de sobrecupo (overbooking) | ✅ Implementado |
-| 📬 Notificaciones por correo / PDF | ⏳ En desarrollo |
+| 📬 Notificaciones por correo (email + PDF) | ✅ Implementado |
 | 🚀 Despliegue (Vercel + Render) | ⏳ En desarrollo |
 
 **Motor de búsqueda:** filtra espacios por ciudad, costo y categoría (oficina privada o escritorio).
 
 **Motor de reservas:** selecciona fecha y horario viendo la disponibilidad en vivo. Antes de insertar una reserva se valida en la base de datos que no exista otra reserva para el mismo espacio en el rango solicitado; si existe, se devuelve un error `409 Conflict`, impidiendo el sobrecupo.
+
+**Notificaciones:** tras una reserva exitosa se genera un **PDF** (PDFKit) con el comprobante y se envía un **correo** (Nodemailer) al usuario. Si no hay SMTP configurado, el envío se omite en modo desarrollo y solo se registra en los logs.
 
 ---
 
@@ -154,7 +156,7 @@ curl -X POST http://localhost:3000/api/reservations \
 | 2 | Configuración base y autenticación (registro, login, JWT) | ✅ Completada |
 | 3 | Motor de búsqueda y catálogo | ✅ Completada |
 | 4 | Motor de reservas y prevención de overbooking | ✅ Completada |
-| 5 | Notificaciones (correo y PDF) | ⏳ Pendiente |
+| 5 | Notificaciones (correo y PDF) | ✅ Completada |
 | 6 | Pruebas y despliegue (Vercel, Render) | ⏳ Pendiente |
 
 ---
@@ -172,5 +174,6 @@ curl -X POST http://localhost:3000/api/reservations \
 ## 📌 Notas
 
 - Los secretos (`JWT_SECRET`, credenciales) se mantienen fuera del repositorio mediante archivos `.env` (ver `.env.example`).
+- Para activar los correos, completa `MAIL_HOST`, `MAIL_USER`, `MAIL_PASS` y `MAIL_FROM` en `.env` (ej. Gmail con contraseña de aplicación). Sin esos valores, el envío se omite en modo dev.
 - El flujo de trabajo usa ramas `main` y `develop` con Pull Requests hacia `develop`.
 - Proyecto de desarrollo académico, sin fines comerciales.

@@ -3,11 +3,18 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { ReservationStatus, SpaceType } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
+
+const TYPE_LABELS: Record<SpaceType, string> = {
+  DESK: 'Escritorio',
+  PRIVATE_OFFICE: 'Oficina privada',
+};
 
 export interface ReservationResponse {
   id: string;
@@ -34,7 +41,12 @@ const ACTIVE_STATUSES: ReservationStatus[] = [
 
 @Injectable()
 export class ReservationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(ReservationsService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mail: MailService,
+  ) {}
 
   async create(userId: string, dto: CreateReservationDto) {
     const space = await this.prisma.space.findUnique({
@@ -75,7 +87,10 @@ export class ReservationsService {
       include: { space: true },
     });
 
-    return this.serialize(reservation);
+    const result = this.serialize(reservation);
+    await this.notifyUser(userId, result, startAt, endAt);
+
+    return result;
   }
 
   async findAllForUser(userId: string): Promise<ReservationResponse[]> {
@@ -108,6 +123,40 @@ export class ReservationsService {
         include: { space: true },
       }),
     );
+  }
+
+  private async notifyUser(
+    userId: string,
+    reservation: ReservationResponse,
+    startAt: Date,
+    endAt: Date,
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true },
+    });
+
+    const hours = (endAt.getTime() - startAt.getTime()) / (60 * 60 * 1000);
+
+    try {
+      await this.mail.sendReservationConfirmation({
+        id: reservation.id,
+        userName: user?.name ?? 'Cliente',
+        userEmail: user?.email ?? '',
+        spaceName: reservation.space.name,
+        spaceCity: reservation.space.city,
+        spaceTypeLabel: TYPE_LABELS[reservation.space.type],
+        startAt,
+        endAt,
+        pricePerHour: reservation.space.pricePerHour,
+        total: hours * reservation.space.pricePerHour,
+      });
+    } catch (error) {
+      this.logger.error(
+        'No se pudo enviar el correo de confirmación',
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 
   private serialize(reservation: {
