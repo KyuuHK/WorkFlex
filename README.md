@@ -1,4 +1,4 @@
-# 🏢 WorkFlex
+#  WorkFlex
 
 > **Sistema Integrado de Reserva de Espacios de Coworking** — Encuentra, reserva y trabaja sin fricciones.
 
@@ -10,15 +10,15 @@ WorkFlex es una plataforma web que automatiza la reserva de espacios de trabajo 
 
 ---
 
-## ✨ Características
+##  Características
 
 | Módulo | Estado |
 | --- | --- |
-| 🔐 Autenticación (registro, login, sesión con JWT) | ✅ Implementado |
-| 🔎 Motor de búsqueda y catálogo (filtros por ciudad, tipo y precio) | ✅ Implementado |
-| 📅 Motor de reservas con prevención de sobrecupo (overbooking) | ✅ Implementado |
-| 📬 Notificaciones por correo (email + PDF) | ✅ Implementado |
-| 🚀 Despliegue (Vercel + Render) | ⏳ En desarrollo |
+|  Autenticación (registro, login, sesión con JWT) |  Implementado |
+|  Motor de búsqueda y catálogo (filtros por ciudad, tipo y precio) |  Implementado |
+|  Motor de reservas con prevención de sobrecupo (overbooking) |  Implementado |
+|  Notificaciones por correo (email + PDF) |  Implementado |
+|  Despliegue (Vercel + Render) |  En desarrollo |
 
 **Motor de búsqueda:** filtra espacios por ciudad, costo y categoría (oficina privada o escritorio).
 
@@ -28,7 +28,7 @@ WorkFlex es una plataforma web que automatiza la reserva de espacios de trabajo 
 
 ---
 
-## 🛠️ Stack Tecnológico
+##  Stack Tecnológico
 
 - **Frontend:** Next.js (App Router) · React · Tailwind CSS · Axios
 - **Backend:** NestJS · Prisma ORM · JWT
@@ -37,7 +37,7 @@ WorkFlex es una plataforma web que automatiza la reserva de espacios de trabajo 
 
 ---
 
-## 📂 Estructura del Monorepo
+##  Estructura del Monorepo
 
 ```text
 WorkFlex/
@@ -60,7 +60,7 @@ WorkFlex/
 
 ---
 
-## 🚀 Instalación y Ejecución Local
+##  Instalación y Ejecución Local
 
 ### Requisitos previos
 - Node.js 20+
@@ -93,7 +93,7 @@ Abre **http://localhost:3001**, crea una cuenta y explora el flujo completo: bú
 
 ---
 
-## 📡 API REST
+##  API REST
 
 | Método | Ruta | Descripción | Acceso |
 | --- | --- | --- | --- |
@@ -134,7 +134,7 @@ curl -X POST http://localhost:3000/api/reservations \
 
 ---
 
-## 📋 Scripts útiles
+##  Scripts útiles
 
 | Proyecto | Comando | Descripción |
 | --- | --- | --- |
@@ -148,9 +148,9 @@ curl -X POST http://localhost:3000/api/reservations \
 
 ---
 
-## 🚀 Despliegue (Fase 6)
+##  Despliegue (Fase 6)
 
-> **✅ En producción:** API → `https://workflex-api.onrender.com/api` · Web → `https://work-flex-phi.vercel.app` · Base de datos → Supabase (PostgreSQL).
+> ** En producción:** API → `https://workflex-api.onrender.com/api` · Web → `https://work-flex-phi.vercel.app` · Base de datos → Supabase (PostgreSQL).
 
 El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (API) y **Vercel** (web). Todo se despliega desde la rama `main` (ver flujo de git más abajo).
 
@@ -192,20 +192,20 @@ El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (
 
 ---
 
-## 🗺️ Roadmap (ciclo de 12 semanas)
+##  Roadmap (ciclo de 12 semanas)
 
 | Fase | Descripción | Estado |
 | --- | --- | --- |
-| 1 | Planificación y diseño (prototipo en Figma, ERD, repos) | ✅ Completada |
-| 2 | Configuración base y autenticación (registro, login, JWT) | ✅ Completada |
-| 3 | Motor de búsqueda y catálogo | ✅ Completada |
-| 4 | Motor de reservas y prevención de overbooking | ✅ Completada |
-| 5 | Notificaciones (correo y PDF) | ✅ Completada |
-| 6 | Pruebas y despliegue (Vercel, Render, Supabase) | ✅ Completada |
+| 1 | Planificación y diseño (prototipo en Figma, ERD, repos) |  Completada |
+| 2 | Configuración base y autenticación (registro, login, JWT) |  Completada |
+| 3 | Motor de búsqueda y catálogo |  Completada |
+| 4 | Motor de reservas y prevención de overbooking |  Completada |
+| 5 | Notificaciones (correo y PDF) |  Completada |
+| 6 | Pruebas y despliegue (Vercel, Render, Supabase) |  Completada |
 
 ---
 
-## 🤝 Equipo de Desarrollo
+##  Equipo de Desarrollo
 
 | Miembro | Rol |
 | --- | --- |
@@ -215,7 +215,7 @@ El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (
 
 ---
 
-## 📌 Notas
+##  Notas
 
 - Los secretos (`JWT_SECRET`, credenciales) se mantienen fuera del repositorio mediante archivos `.env` (ver `.env.example`).
 - Para activar los correos usa **Brevo**: recomiendo `BREVO_API_KEY` (API REST por HTTPS, funciona desde cualquier red; si SMTP falla con "Connection timeout" desde Render, usa esta vía). Alternativa: SMTP relay (`smtp-relay.brevo.com`, puerto 587, SMTP login + SMTP key). El `MAIL_FROM` debe ser un remitente verificado en Brevo; sin esos valores el envío se omite en modo dev.
