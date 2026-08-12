@@ -88,7 +88,7 @@ export class ReservationsService {
     });
 
     const result = this.serialize(reservation);
-    await this.notifyUser(userId, result, startAt, endAt);
+    void this.notifyUser(userId, result, startAt, endAt);
 
     return result;
   }
@@ -131,14 +131,14 @@ export class ReservationsService {
     startAt: Date,
     endAt: Date,
   ) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { name: true, email: true },
-    });
-
-    const hours = (endAt.getTime() - startAt.getTime()) / (60 * 60 * 1000);
-
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true, email: true },
+      });
+
+      const hours = (endAt.getTime() - startAt.getTime()) / (60 * 60 * 1000);
+
       await this.mail.sendReservationConfirmation({
         id: reservation.id,
         userName: user?.name ?? 'Cliente',
