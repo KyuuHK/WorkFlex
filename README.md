@@ -165,7 +165,10 @@ El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (
 3. Define en el dashboard las variables marcadas como manuales:
    - `DATABASE_URL` → la URL de Supabase del paso anterior.
    - `JWT_SECRET` → genera uno con `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
-   - `MAIL_*` → opcional; deja `MAIL_ENABLED=false` si no usarás correo.
+   - `MAIL_*` / `BREVO_API_KEY` → opcional; deja `MAIL_ENABLED=false` si no usarás correo. Con Brevo (gratis, 300 correos/día):
+     - **Recomendado (API REST por HTTPS, funciona desde cualquier red):** `BREVO_API_KEY` → Brevo → Settings → SMTP & API → API Keys (formato `xkeysib-...`).
+     - Alternativa SMTP: `MAIL_HOST=smtp-relay.brevo.com` · `MAIL_PORT=587` · `MAIL_ENABLED=true`; `MAIL_USER` es el **SMTP login** de Brevo (formato `xxx@smtp-brevo.com`, no el host); `MAIL_PASS` es la **SMTP key** (no la API key).
+     - `MAIL_FROM` → un remitente **verificado** en Brevo (Settings → Senders & IPs → Senders). No uses el SMTP login como remitente.
 4. **Deploy.** Render ejecutará `prisma generate`, `prisma migrate deploy` y el build automáticamente.
 5. La API queda en `https://workflex-api.onrender.com/api` (el plan gratis duerme tras 15 min de inactividad).
 
@@ -215,6 +218,6 @@ El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (
 ## 📌 Notas
 
 - Los secretos (`JWT_SECRET`, credenciales) se mantienen fuera del repositorio mediante archivos `.env` (ver `.env.example`).
-- Para activar los correos, completa `MAIL_HOST`, `MAIL_USER`, `MAIL_PASS` y `MAIL_FROM` en `.env` (ej. Gmail con contraseña de aplicación). Sin esos valores, el envío se omite en modo dev.
+- Para activar los correos usa **Brevo**: recomiendo `BREVO_API_KEY` (API REST por HTTPS, funciona desde cualquier red; si SMTP falla con "Connection timeout" desde Render, usa esta vía). Alternativa: SMTP relay (`smtp-relay.brevo.com`, puerto 587, SMTP login + SMTP key). El `MAIL_FROM` debe ser un remitente verificado en Brevo; sin esos valores el envío se omite en modo dev.
 - El flujo de trabajo usa ramas `main` y `develop` con Pull Requests hacia `develop`.
 - Proyecto de desarrollo académico, sin fines comerciales.

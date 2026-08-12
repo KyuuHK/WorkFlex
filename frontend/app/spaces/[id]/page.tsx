@@ -99,9 +99,12 @@ export default function SpaceDetailPage() {
     } catch (err) {
       setMessage({ type: "error", text: getErrorMessage(err) });
     } finally {
-      const freshSlots = await fetchAvailability(id, date);
-      setSlots(freshSlots);
       setBooking(false);
+    }
+    try {
+      setSlots(await fetchAvailability(id, date));
+    } catch {
+      // Mantener los horarios previos si el refresco falla
     }
   };
 

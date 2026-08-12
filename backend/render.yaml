@@ -18,11 +18,21 @@ services:
         value: 7d
       - key: MAIL_ENABLED
         value: "false"
-      # Define estos valores en el dashboard de Render (se marcan como "fromEnv")
+      # Define DATABASE_URL y JWT_SECRET en el dashboard de Render
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET
         sync: false
+      # Correo — el API REST de Brevo (HTTPS/443) es más confiable que SMTP desde Render.
+      # Opción recomendada: BREVO_API_KEY (Settings > SMTP & API > API Keys, formato xkeysib-...)
+      - key: BREVO_API_KEY
+        sync: false
+      # Alternativa SMTP (solo si BREVO_API_KEY no está definida):
+      # - MAIL_HOST: smtp-relay.brevo.com
+      # - MAIL_PORT: 587
+      # - MAIL_USER: SMTP login de Brevo (xxx@smtp-brevo.com)
+      # - MAIL_PASS: SMTP key de Brevo (NO la API key)
+      # - MAIL_FROM: remitente verificado en Brevo
       - key: MAIL_HOST
         sync: false
       - key: MAIL_PORT
