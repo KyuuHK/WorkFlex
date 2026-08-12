@@ -1,0 +1,36 @@
+# Render Blueprint — WorkFlex API
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: workflex-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    region: oregon
+    buildCommand: npm ci && npx prisma generate && npm run build
+    releaseCommand: npx prisma migrate deploy
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: MAIL_ENABLED
+        value: "false"
+      # Define estos valores en el dashboard de Render (se marcan como "fromEnv")
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false

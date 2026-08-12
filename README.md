@@ -148,6 +148,45 @@ curl -X POST http://localhost:3000/api/reservations \
 
 ---
 
+## 🚀 Despliegue (Fase 6)
+
+El despliegue usa el tier gratuito de **Supabase** (base de datos), **Render** (API) y **Vercel** (web). Todo se despliega desde la rama `main` (ver flujo de git más abajo).
+
+### 1. Base de datos — Supabase (gratis)
+1. Crea una cuenta en [supabase.com](https://supabase.com) y un nuevo proyecto.
+2. En **Project Settings → Database → Connection string**, copia la URL de PostgreSQL (modo `pooler`, puerto 6543).
+3. Guarda esa URL: será el `DATABASE_URL` de producción.
+
+### 2. Backend — Render (gratis)
+1. Crea una cuenta en [render.com](https://render.com) con GitHub.
+2. **New → Blueprint** y selecciona el repo. Render detectará `backend/render.yaml` (Web Service `workflex-api`).
+3. Define en el dashboard las variables marcadas como manuales:
+   - `DATABASE_URL` → la URL de Supabase del paso anterior.
+   - `JWT_SECRET` → genera uno con `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
+   - `MAIL_*` → opcional; deja `MAIL_ENABLED=false` si no usarás correo.
+4. **Deploy.** Render ejecutará `prisma generate`, `prisma migrate deploy` y el build automáticamente.
+5. La API queda en `https://workflex-api.onrender.com/api` (el plan gratis duerme tras 15 min de inactividad).
+
+> Nota: si prefieres migración manual, desde el shell de Render ejecuta `npx prisma db seed` para cargar los espacios de ejemplo.
+
+### 3. Frontend — Vercel (gratis)
+1. Crea una cuenta en [vercel.com](https://vercel.com) con GitHub.
+2. **Add New → Project** e importa el repo.
+3. En **Root Directory** selecciona `frontend`.
+4. En **Environment Variables** (Production) agrega:
+   - `NEXT_PUBLIC_API_URL` → `https://workflex-api.onrender.com/api`
+5. **Deploy.** La web queda en una URL `https://<proyecto>.vercel.app`.
+
+### Flujo de git
+- Se desarrolla en `develop` con feature branches y PRs hacia `develop`.
+- Antes de desplegar, haz merge de `develop` a `main`:
+  ```bash
+  git checkout main && git pull && git merge develop && git push
+  ```
+- Render y Vercel vuelven a desplegar automáticamente al recibir cambios en `main`.
+
+---
+
 ## 🗺️ Roadmap (ciclo de 12 semanas)
 
 | Fase | Descripción | Estado |
@@ -157,7 +196,7 @@ curl -X POST http://localhost:3000/api/reservations \
 | 3 | Motor de búsqueda y catálogo | ✅ Completada |
 | 4 | Motor de reservas y prevención de overbooking | ✅ Completada |
 | 5 | Notificaciones (correo y PDF) | ✅ Completada |
-| 6 | Pruebas y despliegue (Vercel, Render) | ⏳ Pendiente |
+| 6 | Pruebas y despliegue (Vercel, Render, Supabase) | ⏳ Pendiente |
 
 ---
 
