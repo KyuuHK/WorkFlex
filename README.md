@@ -4,13 +4,13 @@
 WorkFlex es una plataforma centralizada que automatiza la reserva de espacios de trabajo para nómadas digitales, freelancers y equipos remotos. El objetivo es ofrecer un Producto Mínimo Viable (MVP) web que permita ubicar y asegurar espacios en tiempo real, garantizando la disponibilidad y procesando las solicitudes de manera eficiente.
 
 ## ✨ Características Principales
-*   **Autenticación Básica:** Registro e inicio de sesión de usuarios estándar mediante correo y contraseña convencional[cite: 2].
+*   **Autenticación Básica:** Registro e inicio de sesión de usuarios estándar mediante correo y contraseña convencional.
 *   **Motor de Búsqueda:** Implementación de filtros para segmentar espacios por ciudad, costo y categoría del lugar, ya sea oficina privada o escritorio.
 *   **Gestor de Reservas:** Sistema que permite la selección de fechas y horarios, reflejando la disponibilidad en vivo e impidiendo el sobrecupo (overbooking).
 *   **Notificaciones:** Generación y envío de confirmaciones automáticas por correo electrónico o en formato PDF con el detalle del espacio reservado.
 
 ## 🛠️ Tecnologías y Herramientas (Stack Propuesto)
-*   **Frameworks Web:** Next.js y NestJS[cite: 2].
+*   **Frameworks Web:** Next.js y NestJS.
 *   **Base de Datos:** Scripts SQL para bases de datos relacionales como MySQL o PostgreSQL.
 *   **Diseño UX/UI:** Prototipado interactivo y mapas de sitio desarrollados en Figma.
 *   **Infraestructura y Despliegue:** Alojamiento en la nube utilizando los niveles gratuitos de plataformas como Vercel, Supabase o Render.
