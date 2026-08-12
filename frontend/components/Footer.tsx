@@ -11,6 +11,25 @@ export function Footer() {
           <span className="font-semibold text-gray-500">Beyond Studios</span> ·
           Proyecto académico · Jose Abrego · Kevin Rodriguez · Giuseppe Toscano
         </p>
+        <p className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-400">
+          <a
+            href="/documento-de-alcance-workflex.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 underline-offset-2 transition-colors hover:text-gray-700 hover:underline"
+          >
+            Ayuda
+          </a>
+          <span aria-hidden="true">·</span>
+          <a
+            href="/acta-de-constitucion-workflex.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 underline-offset-2 transition-colors hover:text-gray-700 hover:underline"
+          >
+            Acta de Constitución
+          </a>
+        </p>
       </div>
     </footer>
   );
